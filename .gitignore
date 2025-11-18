@@ -1,0 +1,108 @@
+# -----------------------------------------
+# PYTHON BUILD / CACHE
+# -----------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Byte-compiled / optimized files
+*.pyo
+*.pyd
+
+# -----------------------------------------
+# ENVIRONMENTS
+# -----------------------------------------
+.env
+.envrc
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# -----------------------------------------
+# PROJECT-SPECIFIC (Flask + SQLite)
+# -----------------------------------------
+
+# Ignore SQLite database files
+*.db
+*.db-journal
+
+# Flask instance folder (used for config/secrets)
+instance/
+
+# Web assets cache
+.webassets-cache
+
+# -----------------------------------------
+# DEPENDENCY / PACKAGING TOOLS
+# -----------------------------------------
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+wheels/
+share/python-wheels/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Package managers (pipenv, poetry, pdm, uv, pixi)
+.pdm-python
+.pdm-build/
+.pixi
+
+# -----------------------------------------
+# TESTING
+# -----------------------------------------
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+pytest_cache/
+.pytest_cache/
+.hypothesis/
+
+# -----------------------------------------
+# IDE / OS FILES
+# -----------------------------------------
+
+# VS Code
+.vscode/
+
+# PyCharm
+#.idea/
+
+# macOS Finder junk
+.DS_Store
+
+# Windows thumbnails
+Thumbs.db
+
+# Cursor editor
+.cursorignore
+.cursorindexingignore
+
+# -----------------------------------------
+# TYPE CHECKERS
+# -----------------------------------------
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# -----------------------------------------
+# OTHER TOOLS
+# -----------------------------------------
+.ipynb_checkpoints
+.pybuilder/
+target/
+.sage.py
+
