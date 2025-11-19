@@ -13,6 +13,11 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
+@login_manager.user_loader
 def load_user(user_id):
     conn = get_db_connection()
     user_row = conn_execute("SELECT * FROM Users WHERE user_id = ?", (user_id,)).fetchone()
@@ -21,10 +26,12 @@ def load_user(user_id):
         return User(user_row["user_id"], user_row["username"], user_row["email"], user_row["password"])
     return None
 
-
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = "login"
+class User(UserMixin): 
+    def __init__(self, user_id, username, email, password):
+        self.id = user_id
+        self.username = username
+        self.email = email
+        self.password = password
 
 # fetch all of the animal name and species records from the Animals table
 @app.route("/animals")
