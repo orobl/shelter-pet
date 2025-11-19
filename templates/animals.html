@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Animals{% endblock %}
+
+{% block content %}
+<h1>All Animals</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Species</th>
+            <th>Age</th>
+            <th>Status</th>
+            <th>Adoptable</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for a in animals %}
+        <tr>
+            <td>{{ a.name }}</td>
+            <td>{{ a.species }}</td>
+            <td>{{ a.age }}</td>
+            <td>{{ a.status }}</td>
+            <td>{{ a.adoptable }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ url_for('new_animal') }}" class="btn btn-primary">Add New Animal</a>
+{% endblock %}
