@@ -28,5 +28,10 @@
     </tbody>
 </table>
 
+<a href="{{ url_for('delete_animal', animal_id=animal['animal_id']) }}" 
+   class="btn btn-sm btn-outline-danger">
+   Delete
+</a>
+
 <a href="{{ url_for('new_animal') }}" class="btn btn-primary">Add New Animal</a>
 {% endblock %}
