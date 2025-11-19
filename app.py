@@ -65,6 +65,31 @@ def login():
 
     return render_template("login.html")
 
+@app.route("/animals/new", methods=["GET", "POST"])
+def new_animal():
+    if request.method == "POST":
+        name = request.form["name"]
+        sex = request.form["sex"]
+        age = request.form["age"]
+        species = request.form["species"]
+        intake_date = request.form["intake_date"]
+        status = request.form["status"]
+        adoptable = 1 if request.form.get("adoptable") else 0
+
+        conn = get_db_connection()
+        conn.execute(
+            "INSERT INTO Animals (name, species, sex, age, status, adoptable) VALUES (?, ?, ?, ?, ?, ?)",
+            (name, species, sex, age, intake_date, status, adoptable)
+        )
+        conn.commit()
+        conn.close()
+
+        flash("New animal added!", "success")
+        return redirect(url_for("animals"))
+
+    return render_template("animals_form.html")
+
+
 @app.route("/logout")
 @login_required
 def logout():
@@ -101,11 +126,6 @@ def register():
 def analytics():
     # For now, a simple placeholder
     return "Analytics page works!"
-
-@app.route("/animals/new", methods=["GET", "POST"])
-def new_animal():
-    # For now, placeholder
-    return "New Animal form goes here"
 
 if __name__ == "__main__":
     app.run(debug=True)
