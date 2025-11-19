@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Animal{% endblock %}
+
+{% block content %}
+<div class="card p-4 shadow-sm">
+    <h2 class="mb-3 text-danger">Delete Animal</h2>
+    <p>Are you sure you want to delete the following animal?</p>
+
+    <ul class="list-group mb-3">
+        <li class="list-group-item"><strong>Name:</strong> {{ animal.name }}</li>
+        <li class="list-group-item"><strong>Species:</strong> {{ animal.species }}</li>
+        <li class="list-group-item"><strong>Age:</strong> {{ animal.age }}</li>
+        <li class="list-group-item"><strong>Status:</strong> {{ animal.status }}</li>
+    </ul>
+
+    <form method="POST">
+        <button type="submit" class="btn btn-danger">Yes, delete</button>
+        <a href="{{ url_for('animals') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

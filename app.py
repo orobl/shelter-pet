@@ -89,6 +89,27 @@ def new_animal():
 
     return render_template("animals_form.html")
 
+@app.route("/animals/<int:animal_id>/delete", methods=["GET", "POST"])
+@login_required
+def delete_animal(animal_id):
+    conn = get_db_connection()
+    animal = conn.execute("SELECT * FROM Animals WHERE animal_id = ?", (animal_id,)).fetchone()
+
+    if animal is None:
+        conn.close()
+        flash("Animal not found.", "danger")
+        return redirect(url_for("animals"))
+
+    # If POST, confirm delete
+    if request.method == "POST":
+        conn.execute("DELETE FROM Animals WHERE animal_id = ?", (animal_id,))
+        conn.commit()
+        conn.close()
+        flash("Animal deleted successfully.", "success")
+        return redirect(url_for("animals"))
+
+    conn.close()
+    return render_template("animals_delete.html", animal=animal)
 
 @app.route("/logout")
 @login_required
