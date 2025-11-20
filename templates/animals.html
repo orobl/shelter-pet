@@ -13,8 +13,10 @@
             <th>Age</th>
             <th>Status</th>
             <th>Adoptable</th>
+            <th>Actions</th>
         </tr>
     </thead>
+
     <tbody>
         {% for a in animals %}
         <tr>
@@ -23,9 +25,15 @@
             <td>{{ a.age }}</td>
             <td>{{ a.status }}</td>
             <td>{{ a.adoptable }}</td>
+
             <td>
+                <a href="{{ url_for('edit_animal', animal_id=a.animal_id) }}"
+                   class="btn btn-sm btn-outline-warning">
+                    Edit
+                </a>
+
                 <a href="{{ url_for('delete_animal', animal_id=a.animal_id) }}"
-                    class="btn btn-sm btn-outline-danger">
+                   class="btn btn-sm btn-outline-danger ms-1">
                     Delete
                 </a>
             </td>
@@ -34,7 +42,6 @@
     </tbody>
 </table>
 
-
-
 <a href="{{ url_for('new_animal') }}" class="btn btn-primary">Add New Animal</a>
+
 {% endblock %}

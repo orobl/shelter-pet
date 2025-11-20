@@ -87,7 +87,39 @@ def new_animal():
         flash("New animal added!", "success")
         return redirect(url_for("animals"))
 
-    return render_template("animals_form.html")
+    return render_template("animals_form.html", animal=None)
+
+@app.route("/animals/<int:animal_id>/edit", methods=["GET", "POST"])
+def edit_animal(animal_id):
+    conn = get_db_connection()
+    animal = conn.execute("SELECT * FROM Animals WHERE animal_id = ?", (animal_id,)).fetchone()
+
+    if not animal:
+        return "Animal not found", 404
+
+    if request.method == "POST":
+        name = request.form["name"]
+        species = request.form["species"]
+        sex = request.form["sex"]
+        age = request.form["age"]
+        intake_date = request.form["intake_date"]
+        status = request.form["status"]
+        adoptable = 1 if "adoptable" in request.form else 0
+
+        conn.execute("""
+            UPDATE Animals
+            SET name=?, species=?, sex=?, age=?, intake_date=?, status=?, adoptable=?
+            WHERE animal_id=?
+        """, (name, species, sex, age, intake_date, status, adoptable, animal_id))
+
+        conn.commit()
+        conn.close()
+        return redirect(url_for("animals"))
+
+    # GET → show form pre-filled
+    conn.close()
+    return render_template("animals_form.html", animal=animal)
+
 
 @app.route("/animals/<int:animal_id>/delete", methods=["GET", "POST"])
 @login_required
