@@ -103,7 +103,7 @@
         </div>
 
         <!-- Search -->
-        <input type="text" class="search-input search-bar" id="adoptionSearch" placeholder="Search by pet name, adopter name, or ID...">
+        <input type="text" class="search-input search-bar" id="adoptionSearch" placeholder="Search by ID...">
 
         <table class="table table-striped mt-3" id="adoptionTable">
             <thead>
@@ -124,8 +124,9 @@
                     <td>{{ a.animal_id }}</td>
                     <td>{{ a.adopter_id }}</td>
                     <td>{{ a.employee_id }}</td>
-                    <td>{{ a.date }}</td>
-                    <td>{{ a.fee }}</td>
+                    <td>{{ a['adoption_date'] }}</td>
+                    <td>{{ a['adoption_fee'] }}</td>
+
                     <td>
                         <a href="{{ url_for('edit_adoption', adoption_id=a.adoption_id) }}" class="btn btn-edit me-1">Edit</a>
                         <a href="{{ url_for('delete_adoption', adoption_id=a.adoption_id) }}" class="btn btn-delete">Delete</a>

@@ -52,11 +52,12 @@
     <div class="row mt-4">
         <div class="col-12">
             <div class="card">
-                <h4>Long-Stay Animals (90+ days)</h4>
+                <h4>Long-Stay Animals (20+ days)</h4>
                 {% if long_stays %}
                 <table class="table long-stay-table">
                     <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Name</th>
                             <th>Intake Date</th>
                             <th>Status</th>
@@ -65,6 +66,7 @@
                     <tbody>
                         {% for animal in long_stays %}
                         <tr>
+                            <td>{{ animal.animal_id }}</td>
                             <td>{{ animal.name }}</td>
                             <td>{{ animal.intake_date }}</td>
                             <td>{{ animal.status }}</td>

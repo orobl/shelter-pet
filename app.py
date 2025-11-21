@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
-app.secret_key = "your_secret_key_here" #update later
+app.secret_key = "your_secret_key_here" #UPDATE WITH PRIVATE KEY UPON PRODUCTION DEPLOYMENT
 CSRFProtect(app)
 
 # helper function to connect with the database
@@ -578,7 +578,7 @@ def analytics():
             SELECT 1
             FROM HealthRecords h
             WHERE h.animal_id = a.animal_id
-            AND h.record_type = 'health check'
+            AND h.record_type = 'health_check'
         )
     """).fetchone()["done"]
 
@@ -589,7 +589,7 @@ def analytics():
             SELECT 1
             FROM HealthRecords h
             WHERE h.animal_id = a.animal_id
-            AND h.record_type = 'spay/neuter'
+            AND h.record_type = 'spay_neuter'
         )
     """).fetchone()["done"]
 
@@ -597,8 +597,8 @@ def analytics():
     spay_pct = round((spay_done / total_animals) * 100, 1) if total_animals else 0
 
     # Long-stay
-    long_stay_threshold = datetime.now() - timedelta(days=90)
-    long_stays = conn.execute("SELECT name, intake_date, status FROM Animals WHERE intake_date <= ?", 
+    long_stay_threshold = datetime.now() - timedelta(days=20)
+    long_stays = conn.execute("SELECT animal_id, name, intake_date, status FROM Animals WHERE intake_date <= ? AND status != 'adopted'", 
                               (long_stay_threshold.strftime("%Y-%m-%d"),)).fetchall()
 
     conn.close()
