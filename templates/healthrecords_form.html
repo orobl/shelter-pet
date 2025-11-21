@@ -118,8 +118,13 @@
 
             <div class="mb-3">
                 <label class="form-label">Record Type</label>
-                <input type="text" name="record_type" class="form-control" 
-                       value="{{ healthrecord.record_type if healthrecord else '' }}" required>
+                <select name="record_type" class="form-select" required>
+                    <option value="">Select status</option>
+                    <option value="health_check" {% if healthrecord and healthrecord.record_type=='health_check' %}selected{% endif %}>Health Check</option>
+                    <option value="spay_neuter" {% if healthrecord and healthrecord.record_type=='spay_neuter' %}selected{% endif %}>Spay/Neuter</option>
+                    <option value="procedure" {% if healthrecord and healthrecord.record_type=='procedure' %}selected{% endif %}>Procedure</option>
+                    <option value="other" {% if healthrecord and healthrecord.record_type=='other' %}selected{% endif %}>Other</option>
+                </select>
             </div>
 
             <div class="mb-3">
@@ -130,7 +135,7 @@
 
             <div class="mb-3">
                 <label class="form-label">Treatment</label>
-                <input type="text" name="treatment" class="form-control"
+                <input type="date" name="treatment" class="form-control"
                     value="{{ healthrecord.treatment if healthrecord else '' }}" required>
             </div>
 

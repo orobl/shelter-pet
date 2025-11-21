@@ -11,19 +11,20 @@
         rel="stylesheet"
     >
 
-    <!-- Your custom stylesheet -->
+    <!-- custom stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body class="bg-light">
 
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{ url_for('dashboard') }}">Shelter Manager</a>
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2e6072; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="{{ url_for('dashboard') }}" style="color: #fff;">Shelter Manager</a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
@@ -33,6 +34,18 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('animals') }}">Animals</a>
                         </li>
+                        <li class="nav-item"> 
+                            <a class="nav-link" href="{{ url_for('employees') }}">Employees</a>
+                        </li>  
+                        <li class="nav-item"> 
+                            <a class="nav-link" href="{{ url_for('adopters') }}">Adopters</a>
+                        </li>   
+                        <li class="nav-item"> 
+                            <a class="nav-link" href="{{ url_for('adoptions') }}">Adoptions</a>
+                        </li>  
+                        <li class="nav-item"> 
+                            <a class="nav-link" href="{{ url_for('healthrecords') }}">Health Records</a>
+                        </li>  
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('analytics') }}">Analytics</a>
                         </li>
