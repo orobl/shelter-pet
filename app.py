@@ -154,7 +154,7 @@ def delete_animal(animal_id):
         flash("Animal deleted!", "success")
         return redirect(url_for("animals"))
     # If GET, show confirmation page
-    conn.close
+    conn.close()
     return render_template("animals_delete.html", animal=animal)
 
 @app.route("/employees", endpoint="employees")
@@ -240,7 +240,7 @@ def delete_employee(employee_id):
         return redirect(url_for("employees"))
     
     # If GET, show confirmation page
-    conn.close
+    conn.close()
     return render_template("employees_delete.html", employee=employee)
 
 @app.route("/adopters", endpoint="adopters")
@@ -326,6 +326,90 @@ def delete_adopter(adopter_id):
     # If GET, show confirmation page
     conn.close()
     return render_template("adopters_delete.html", adopter=adopter)
+
+@app.route("/adoptions", endpoint="adoptions")
+@login_required
+def adoptions():
+    conn = get_db_connection()
+    adoptions = conn.execute("SELECT * FROM Adoptions").fetchall()
+    conn.close()
+    return render_template("adoptions.html", adoptions=adoptions)
+
+@app.route("/adoptions/new", methods=["GET", "POST"])
+@login_required
+def new_adoption():
+    if request.method == "POST":
+        animal_id = request.form["animal_id"]
+        adopter_id = request.form["adopter_id"]
+        employee_id = request.form["employee_id"]
+        adoption_date = request.form["adoption_date"]
+        adoption_fee = request.form["adoption_fee"]
+    
+        conn = get_db_connection()
+        conn.execute(
+            "INSERT INTO Adoptions (animal_id, adopter_id, employee_id, adoption_date, adoption_fee) VALUES (?, ?, ?, ?, ?)",
+            (animal_id, adopter_id, employee_id, adoption_date, adoption_fee)
+        )
+        conn.commit()
+        conn.close()
+
+        flash("New adoption added!", "success")
+        return redirect(url_for("adoptions"))
+
+    return render_template("adoptions_form.html", adoption=None)
+
+@app.route("/adoptions/<adoption_id>/edit", methods=["GET", "POST"])
+@login_required
+def edit_adoption(adoption_id):
+    conn = get_db_connection()
+    adoption = conn.execute("SELECT * FROM Adoptions WHERE adoption_id = ?", (adoption_id,)).fetchone()
+
+    if not adoption:
+        return "adoption not found", 404
+
+    if request.method == "POST":
+        animal_id = request.form["animal_id"]
+        adopter_id = request.form["adopter_id"]
+        employee_id = request.form["employee_id"]
+        adoption_date = request.form["adoption_date"]
+        adoption_fee = request.form["adoption_fee"]
+    
+        conn.execute("""
+            UPDATE Adoptions
+            SET animal_id=?, adopter_id=?, employee_id=?, adoption_date=?, adoption_fee=?
+            WHERE adoption_id=?
+        """, (animal_id, adopter_id, employee_id, adoption_date, adoption_fee, adoption_id))
+
+        conn.commit()
+        conn.close()
+        return redirect(url_for("adoptions"))
+
+    # GET → show form pre-filled
+    conn.close()
+    return render_template("adoptions_form.html", adoption=adoption)
+
+@app.route("/adoptions/<adoption_id>/delete", methods=["GET", "POST"])
+@login_required
+def delete_adoption(adoption_id):
+    conn = get_db_connection()
+    adoption = conn.execute("SELECT * FROM Adoptions WHERE adoption_id = ?", (adoption_id,)).fetchone()
+
+    if adoption is None:
+        conn.close()
+        flash("Adoption not found.", "danger")
+        return redirect(url_for("adoptions"))
+
+    # If POST, confirm delete
+    if request.method == "POST":
+        conn.execute("DELETE FROM Adoptions WHERE adoption_id = ?", (adoption_id,))
+        conn.commit()
+        conn.close()
+        flash("Adoption deleted!", "success")
+        return redirect(url_for("adoptions"))
+    
+    # If GET, show confirmation page
+    conn.close()
+    return render_template("adoptions_delete.html", adoption=adoption)
 
 @app.route("/logout")
 @login_required
