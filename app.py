@@ -1,11 +1,14 @@
 from flask import Flask, render_template, redirect, url_for, request, flash
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user, UserMixin 
+from flask_login import LoginManager, login_user, login_required, logout_user, UserMixin 
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
+from forms import LoginForm, RegisterForm
+from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
 
 app.secret_key = "your_secret_key_here" #update later
+CSRFProtect(app)
 
 # helper function to connect with the database
 def get_db_connection():
@@ -44,9 +47,11 @@ def dashboard():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == "POST":
-        email = request.form["email"]
-        password = request.form["password"]
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
 
         conn = get_db_connection()
         user_row = conn.execute("SELECT * FROM Users WHERE email = ?", (email,)).fetchone()
@@ -61,7 +66,8 @@ def login():
             flash("Invalid email or password.", "danger")
             return redirect(url_for("login"))
 
-    return render_template("login.html")
+    return render_template("login.html", form=form)
+
 
 
 @app.route("/animals")
@@ -157,10 +163,13 @@ def logout():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    if request.method == "POST":
-        username = request.form["username"]
-        email = request.form["email"]
-        password = request.form["password"]
+    form = RegisterForm()
+
+    if form.validate_on_submit():
+        username = form.username.data
+        email = form.email.data
+        password = form.password.data
+
         hashed_pw = generate_password_hash(password, method="pbkdf2:sha256", salt_length=16)
 
         conn = get_db_connection()
@@ -170,15 +179,17 @@ def register():
                 (username, email, hashed_pw)
             )
             conn.commit()
-            conn.close()
             flash("Registration successful! Please log in.", "success")
             return redirect(url_for("login"))
-        except sqlite3.IntegrityError:
-            conn.close()
-            flash("Username or email already exists.", "danger")
-            return redirect(url_for("register"))
 
-    return render_template("register.html")
+        except sqlite3.IntegrityError:
+            flash("Username or email already exists.", "danger")
+
+        finally:
+            conn.close()
+
+    return render_template("register.html", form=form)
+
 
 @app.route("/analytics", methods=["GET", "POST"])
 def analytics():

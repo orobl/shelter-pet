@@ -1,10 +1,104 @@
 {% extends "base.html" %}
 
+{% block title %}Login | Happy Paws{% endblock %}
+
 {% block content %}
-<h2>Login</h2>
-<form method="POST">
-    <input type="email" name="email" placeholder="Email" required><br>
-    <input type="password" name="password" placeholder="Password" required><br>
-    <button type="submit">Login</button>
-</form>
+
+<style>
+    body {
+        background-image:
+            url("data:image/svg+xml,%3Csvg width='120' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='10' y='80' font-size='72' fill='rgba(0,0,0,0.06)'%3E🐾%3C/text%3E%3C/svg%3E"),
+            linear-gradient(135deg, #8fe3ff 0%, #ffd6e8 100%);
+        background-size: 200px, cover;
+        background-repeat: repeat, no-repeat;
+        background-attachment: fixed;
+    }
+
+    .login-wrapper {
+        min-height: 85vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+    }
+
+    .login-card {
+        background: rgba(255, 255, 255, 0.70);
+        backdrop-filter: blur(10px);
+        border-radius: 22px;
+        padding: 2.5rem;
+        width: 100%;
+        max-width: 450px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    }
+
+    .title {
+        font-weight: 800;
+        font-size: 2rem;
+        color: #2e6072;
+    }
+
+    .btn-login {
+        width: 100%;
+        background: #ff7b71;
+        color: white;
+        border-radius: 40px;
+        padding: 0.8rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border: none;
+    }
+
+    .btn-login:hover {
+        background: #e05549;
+        color: white;
+    }
+
+    .alt-link {
+        font-weight: 600;
+        color: #2e6072;
+        text-decoration: none;
+    }
+
+    .alt-link:hover {
+        text-decoration: underline;
+    }
+
+</style>
+
+<div class="login-wrapper">
+
+    <div class="login-card">
+
+        <div class="text-center mb-4">
+            <h2 class="title">Welcome Back!</h2>
+            <p class="text-muted">Log in to continue to your dashboard</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('login') }}">
+            {{ form.hidden_tag() }}
+
+            <div class="mb-3">
+                {{ form.email.label(class="form-label fw-semibold") }}
+                {{ form.email(class="form-control form-control-lg rounded-pill") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.password.label(class="form-label fw-semibold") }}
+                {{ form.password(class="form-control form-control-lg rounded-pill") }}
+            </div>
+
+            <button type="submit" class="btn btn-login mt-3">Log In</button>
+        </form>
+
+        <div class="text-center mt-4">
+            <p class="mb-0">
+                New here?
+                <a href="{{ url_for('register') }}" class="alt-link">Create an account</a>
+            </p>
+        </div>
+    </div>
+
+</div>
+
 {% endblock %}
