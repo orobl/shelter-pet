@@ -98,7 +98,7 @@
 <div class="animals-wrapper">
     <div class="animals-card">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="title">All Animals</h2>
+            <h2 class="title">Animals</h2>
             <a href="{{ url_for('new_animal') }}" class="btn btn-add">Add New Animal</a>
         </div>
 
@@ -113,6 +113,7 @@
                     <th>Species</th>
                     <th>Sex</th>
                     <th>Age</th>
+                    <th>Intake Date</th>
                     <th>Status</th>
                     <th>Adoptable</th>
                     <th>Actions</th>
@@ -127,6 +128,7 @@
                     <td>{{ a.species }}</td>
                     <td>{{ a.sex }}</td>
                     <td>{{ a.age }}</td>
+                    <td>{{ a.intake_date }}</td>
                     <td>{{ a.status }}</td>
                     <td>{{ "Yes" if a.adoptable else "No" }}</td>
                     <td>
