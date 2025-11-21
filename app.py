@@ -4,6 +4,8 @@ import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import LoginForm, RegisterForm
 from flask_wtf.csrf import CSRFProtect
+import json
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -533,11 +535,85 @@ def register():
 
     return render_template("register.html", form=form)
 
-@app.route("/analytics", methods=["GET", "POST"])
+@app.route("/analytics")
 @login_required
 def analytics():
-    # For now, a simple placeholder
-    return "Analytics page works!"
+    conn = get_db_connection()
+    
+    # --- Intakes over time ---
+    intakes = conn.execute("SELECT intake_date FROM Animals").fetchall()
+    adoptions = conn.execute("SELECT adoption_date FROM Adoptions").fetchall()
+    
+    # helper to count per month
+    def get_month_counts(dates):
+        counts = {}
+        for row in dates:
+            date_str = row[0]
+            if date_str:
+                month = datetime.strptime(date_str, "%Y-%m-%d").strftime("%Y-%m")
+                counts[month] = counts.get(month, 0) + 1
+        sorted_months = sorted(counts.keys())
+        return sorted_months, [counts[m] for m in sorted_months]
+    
+    months_intakes, intakes_counts = get_month_counts(intakes)
+    months_adoptions, adoptions_counts = get_month_counts(adoptions)
+
+    all_months = sorted(set(months_intakes + months_adoptions))
+    intakes_counts = [intakes_counts[months_intakes.index(m)] if m in months_intakes else 0 for m in all_months]
+    adoptions_counts = [adoptions_counts[months_adoptions.index(m)] if m in months_adoptions else 0 for m in all_months]
+
+    # Status pie chart
+    statuses = conn.execute("SELECT status, COUNT(*) as count FROM Animals GROUP BY status").fetchall()
+    status_labels = [row["status"] for row in statuses]
+    status_counts = [row["count"] for row in statuses]
+
+    # Health & spay/neuter
+
+    total_animals = conn.execute("SELECT COUNT(*) AS total FROM Animals").fetchone()["total"]
+
+    health_done = conn.execute("""
+        SELECT COUNT(*) AS done
+        FROM Animals a
+        WHERE EXISTS (
+            SELECT 1
+            FROM HealthRecords h
+            WHERE h.animal_id = a.animal_id
+            AND h.record_type = 'health check'
+        )
+    """).fetchone()["done"]
+
+    spay_done = conn.execute("""
+        SELECT COUNT(*) AS done
+        FROM Animals a
+        WHERE EXISTS (
+            SELECT 1
+            FROM HealthRecords h
+            WHERE h.animal_id = a.animal_id
+            AND h.record_type = 'spay/neuter'
+        )
+    """).fetchone()["done"]
+
+    health_pct = round((health_done / total_animals) * 100, 1) if total_animals else 0
+    spay_pct = round((spay_done / total_animals) * 100, 1) if total_animals else 0
+
+    # Long-stay
+    long_stay_threshold = datetime.now() - timedelta(days=90)
+    long_stays = conn.execute("SELECT name, intake_date, status FROM Animals WHERE intake_date <= ?", 
+                              (long_stay_threshold.strftime("%Y-%m-%d"),)).fetchall()
+
+    conn.close()
+
+    return render_template("analytics.html",
+                       months=all_months,
+                       intakes_counts=intakes_counts,
+                       adoptions_counts=adoptions_counts,
+                       status_labels=status_labels,
+                       status_counts=status_counts,
+                       health_pct=health_pct,
+                       spay_pct=spay_pct,
+                       long_stays=long_stays)
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
