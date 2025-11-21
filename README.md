@@ -17,14 +17,6 @@ Features
   - List of long-stay animals (20+ days)
 - Authentication: Simple login/logout system to protect sensitive data.
 
-
-shelter-pet/
-├── app.py                      # Main Flask app
-├── forms.py                    # 
-├── shelter_database.db         # SQLite database with dummy data
-├── templates/                  # HTML templates
-└── README.md                   # Project documentation
-
 Options for Improvement
 - Implement stronger password hashing for production (bcrypt or argon2).
 - Include user roles (admin, staff, adopters) with permission management.
