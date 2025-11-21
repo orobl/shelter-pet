@@ -33,7 +33,6 @@
         margin-bottom: 1rem;
     }
 
-    /* Add New Animal Button */
     .btn-add {
         background: #ff7b71;
         color: white;
@@ -44,11 +43,8 @@
         transition: background 0.3s;
     }
 
-    .btn-add:hover {
-        background: #e05549;
-    }
+    .btn-add:hover { background: #e05549; }
 
-    /* Edit/Delete buttons */
     .btn-edit {
         background: #ffb347;
         color: white;
@@ -58,9 +54,7 @@
         border: none;
     }
 
-    .btn-edit:hover {
-        background: #e0993a;
-    }
+    .btn-edit:hover { background: #e0993a; }
 
     .btn-delete {
         background: #ff7b71;
@@ -71,9 +65,7 @@
         border: none;
     }
 
-    .btn-delete:hover {
-        background: #e05549;
-    }
+    .btn-delete:hover { background: #e05549; }
 
     .search-bar {
         margin-bottom: 1.5rem;
@@ -100,15 +92,11 @@
         font-weight: 600;
     }
 
-    .table tbody tr:hover {
-        background-color: #fff1f0;
-    }
-
+    .table tbody tr:hover { background-color: #fff1f0; }
 </style>
 
 <div class="animals-wrapper">
     <div class="animals-card">
-
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="title">All Animals</h2>
             <a href="{{ url_for('new_animal') }}" class="btn btn-add">Add New Animal</a>
@@ -123,6 +111,7 @@
                     <th>ID</th>
                     <th>Name</th>
                     <th>Species</th>
+                    <th>Sex</th>
                     <th>Age</th>
                     <th>Status</th>
                     <th>Adoptable</th>
@@ -132,12 +121,14 @@
             <tbody>
                 {% for a in animals %}
                 <tr>
-                    <td>{{ a.animal_id }}</td>
+                    <!-- Format animal_id with leading zeros -->
+                    <td>{{ "%06d"|format(a.animal_id) }}</td>
                     <td>{{ a.name }}</td>
                     <td>{{ a.species }}</td>
+                    <td>{{ a.sex }}</td>
                     <td>{{ a.age }}</td>
                     <td>{{ a.status }}</td>
-                    <td>{{ a.adoptable }}</td>
+                    <td>{{ "Yes" if a.adoptable else "No" }}</td>
                     <td>
                         <a href="{{ url_for('edit_animal', animal_id=a.animal_id) }}" class="btn btn-edit me-1">Edit</a>
                         <a href="{{ url_for('delete_animal', animal_id=a.animal_id) }}" class="btn btn-delete">Delete</a>
@@ -152,6 +143,7 @@
 <script>
     const searchInput = document.getElementById('animalSearch');
     const table = document.getElementById('animalsTable');
+
     searchInput.addEventListener('keyup', function() {
         const filter = searchInput.value.toLowerCase();
         const rows = table.getElementsByTagName('tr');
@@ -159,12 +151,14 @@
             const idCell = rows[i].getElementsByTagName('td')[0];
             const nameCell = rows[i].getElementsByTagName('td')[1];
             if (idCell && nameCell) {
-                const idText = idCell.textContent || idCell.innerText;
-                const nameText = nameCell.textContent || nameCell.innerText;
-                rows[i].style.display = (idText.toLowerCase().includes(filter) || nameText.toLowerCase().includes(filter)) ? '' : 'none';
+                // Remove formatting for search comparison
+                const idText = parseInt(idCell.textContent).toString() || '';
+                const nameText = nameCell.textContent || '';
+                rows[i].style.display = (idText.includes(filter) || nameText.toLowerCase().includes(filter)) ? '' : 'none';
             }
         }
     });
 </script>
 
 {% endblock %}
+

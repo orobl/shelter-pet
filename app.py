@@ -90,7 +90,7 @@ def new_animal():
 
         conn = get_db_connection()
         conn.execute(
-            "INSERT INTO Animals (name, species, sex, age, status, adoptable) VALUES (?, ?, ?, ?, ?, ?)",
+            "INSERT INTO Animals (name, species, sex, age, intake_date, status, adoptable) VALUES (?, ?, ?, ?, ?, ?, ?)",
             (name, species, sex, age, intake_date, status, adoptable)
         )
         conn.commit()
@@ -101,7 +101,7 @@ def new_animal():
 
     return render_template("animals_form.html", animal=None)
 
-@app.route("/animals/<int:animal_id>/edit", methods=["GET", "POST"])
+@app.route("/animals/<animal_id>/edit", methods=["GET", "POST"])
 def edit_animal(animal_id):
     conn = get_db_connection()
     animal = conn.execute("SELECT * FROM Animals WHERE animal_id = ?", (animal_id,)).fetchone()
@@ -132,7 +132,7 @@ def edit_animal(animal_id):
     conn.close()
     return render_template("animals_form.html", animal=animal)
 
-@app.route("/animals/<int:animal_id>/delete", methods=["GET", "POST"])
+@app.route("/animals/<animal_id>/delete", methods=["GET", "POST"])
 @login_required
 def delete_animal(animal_id):
     conn = get_db_connection()

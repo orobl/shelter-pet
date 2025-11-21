@@ -83,7 +83,7 @@
         border: none;
         display: block;
         width: 100%;
-        margin-top: 1.5rem; /* more space from submit button */
+        margin-top: 1.5rem;
         transition: background 0.3s;
         text-align: center;
         text-decoration: none;
@@ -102,6 +102,8 @@
         </h2>
 
         <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
             <div class="mb-3">
                 <label class="form-label">Name</label>
                 <input type="text" name="name" class="form-control" 
@@ -163,5 +165,3 @@
 </div>
 
 {% endblock %}
-
-
