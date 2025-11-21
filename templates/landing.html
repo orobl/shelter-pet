@@ -3,14 +3,75 @@
 {% block title %}Welcome{% endblock %}
 
 {% block content %}
-<div class="text-center mt-5">
 
-    <h1 class="mb-4">Welcome to the Animal Shelter System</h1>
+<!-- Hero Section -->
+<div class="container py-5">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h1 class="display-4 fw-bold">Welcome to the Animal Shelter Portal</h1>
+            <p class="lead text-muted mt-3">
+                Manage animals, staff, intake records, and more — all in one place.
+            </p>
 
-    <p class="lead mb-4">Please login or register to continue.</p>
+            <div class="mt-4">
+                <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg me-2">
+                    Log In
+                </a>
+                <a href="{{ url_for('register') }}" class="btn btn-outline-secondary btn-lg">
+                    Register
+                </a>
+            </div>
+        </div>
 
-    <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg me-2">Login</a>
-    <a href="{{ url_for('register') }}" class="btn btn-outline-secondary btn-lg">Register</a>
-
+        <div class="col-md-6 text-center">
+            <img src="https://cdn-icons-png.flaticon.com/512/194/194279.png"
+                 alt="Shelter Icon" class="img-fluid" style="max-width: 70%">
+        </div>
+    </div>
 </div>
+
+<hr class="my-5">
+
+<!-- Feature Grid Section -->
+<div class="container py-5">
+    <h2 class="text-center mb-4">What You Can Do</h2>
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Manage Animals</h5>
+                    <p class="card-text text-muted">
+                        Add, edit, delete, and track animals in the shelter.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Track Adoption Status</h5>
+                    <p class="card-text text-muted">
+                        Monitor adoptions, fosters, and pending intakes.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">User Account Access</h5>
+                    <p class="card-text text-muted">
+                        Secure login system to protect sensitive shelter data.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
 {% endblock %}
+
