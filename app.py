@@ -20,8 +20,8 @@ login_manager.login_view = "login"
 @login_manager.user_loader
 def load_user(user_id):
     conn = get_db_connection()
-    user_row = conn_execute("SELECT * FROM Users WHERE user_id = ?", (user_id,)).fetchone()
-    conn_close()
+    user_row = conn.execute("SELECT * FROM Users WHERE user_id = ?", (user_id,)).fetchone()
+    conn.close()
     if user_row: 
         return User(user_row["user_id"], user_row["username"], user_row["email"], user_row["password"])
     return None
@@ -161,7 +161,7 @@ def register():
         username = request.form["username"]
         email = request.form["email"]
         password = request.form["password"]
-        hashed_pw = generate_password_hash(password, method="sha256")
+        hashed_pw = generate_password_hash(password, method="pbkdf2:sha256", salt_length=16)
 
         conn = get_db_connection()
         try:
