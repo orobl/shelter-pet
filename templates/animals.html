@@ -1,47 +1,170 @@
 {% extends "base.html" %}
 
-{% block title %}Animals{% endblock %}
+{% block title %}Animals | Happy Paws{% endblock %}
 
 {% block content %}
-<h1>All Animals</h1>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Species</th>
-            <th>Age</th>
-            <th>Status</th>
-            <th>Adoptable</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
+<style>
+    body {
+        background-image:
+            url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='10' fill='rgba(255,123,113,0.3)'/%3E%3Ccircle cx='30' cy='30' r='5' fill='rgba(255,123,113,0.3)'/%3E%3Ccircle cx='70' cy='30' r='5' fill='rgba(255,123,113,0.3)'/%3E%3Ccircle cx='30' cy='70' r='5' fill='rgba(255,123,113,0.3)'/%3E%3Ccircle cx='70' cy='70' r='5' fill='rgba(255,123,113,0.3)'/%3E%3C/svg%3E"),
+            linear-gradient(135deg, #f9f7ff 0%, #e3f9ff 100%);
+        background-size: 200px, cover;
+        background-repeat: repeat, no-repeat;
+        background-attachment: fixed;
+    }
 
-    <tbody>
-        {% for a in animals %}
-        <tr>
-            <td>{{ a.name }}</td>
-            <td>{{ a.species }}</td>
-            <td>{{ a.age }}</td>
-            <td>{{ a.status }}</td>
-            <td>{{ a.adoptable }}</td>
+    .animals-wrapper {
+        padding: 2rem;
+    }
 
-            <td>
-                <a href="{{ url_for('edit_animal', animal_id=a.animal_id) }}"
-                   class="btn btn-sm btn-outline-warning">
-                    Edit
-                </a>
+    .animals-card {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(12px);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
 
-                <a href="{{ url_for('delete_animal', animal_id=a.animal_id) }}"
-                   class="btn btn-sm btn-outline-danger ms-1">
-                    Delete
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    .title {
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: #2e6072;
+        margin-bottom: 1rem;
+    }
 
-<a href="{{ url_for('new_animal') }}" class="btn btn-primary">Add New Animal</a>
+    /* Add New Animal Button */
+    .btn-add {
+        background: #ff7b71;
+        color: white;
+        border-radius: 30px;
+        padding: 0.6rem 1.2rem;
+        font-weight: 600;
+        border: none;
+        transition: background 0.3s;
+    }
+
+    .btn-add:hover {
+        background: #e05549;
+    }
+
+    /* Edit/Delete buttons */
+    .btn-edit {
+        background: #ffb347;
+        color: white;
+        border-radius: 20px;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+        border: none;
+    }
+
+    .btn-edit:hover {
+        background: #e0993a;
+    }
+
+    .btn-delete {
+        background: #ff7b71;
+        color: white;
+        border-radius: 20px;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+        border: none;
+    }
+
+    .btn-delete:hover {
+        background: #e05549;
+    }
+
+    .search-bar {
+        margin-bottom: 1.5rem;
+    }
+
+    .search-input {
+        border-radius: 30px;
+        padding: 0.6rem 1rem;
+        width: 100%;
+        max-width: 400px;
+        border: 1px solid #ccc;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-input:focus {
+        border-color: #ff7b71;
+        box-shadow: 0 0 5px rgba(255,123,113,0.5);
+    }
+
+    .table thead th {
+        background-color: #2e6072;
+        color: #ffffff;
+        font-weight: 600;
+    }
+
+    .table tbody tr:hover {
+        background-color: #fff1f0;
+    }
+
+</style>
+
+<div class="animals-wrapper">
+    <div class="animals-card">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="title">All Animals</h2>
+            <a href="{{ url_for('new_animal') }}" class="btn btn-add">Add New Animal</a>
+        </div>
+
+        <!-- Search -->
+        <input type="text" class="search-input search-bar" id="animalSearch" placeholder="Search by name or ID...">
+
+        <table class="table table-striped mt-3" id="animalsTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Species</th>
+                    <th>Age</th>
+                    <th>Status</th>
+                    <th>Adoptable</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in animals %}
+                <tr>
+                    <td>{{ a.animal_id }}</td>
+                    <td>{{ a.name }}</td>
+                    <td>{{ a.species }}</td>
+                    <td>{{ a.age }}</td>
+                    <td>{{ a.status }}</td>
+                    <td>{{ a.adoptable }}</td>
+                    <td>
+                        <a href="{{ url_for('edit_animal', animal_id=a.animal_id) }}" class="btn btn-edit me-1">Edit</a>
+                        <a href="{{ url_for('delete_animal', animal_id=a.animal_id) }}" class="btn btn-delete">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const searchInput = document.getElementById('animalSearch');
+    const table = document.getElementById('animalsTable');
+    searchInput.addEventListener('keyup', function() {
+        const filter = searchInput.value.toLowerCase();
+        const rows = table.getElementsByTagName('tr');
+        for (let i = 1; i < rows.length; i++) {
+            const idCell = rows[i].getElementsByTagName('td')[0];
+            const nameCell = rows[i].getElementsByTagName('td')[1];
+            if (idCell && nameCell) {
+                const idText = idCell.textContent || idCell.innerText;
+                const nameText = nameCell.textContent || nameCell.innerText;
+                rows[i].style.display = (idText.toLowerCase().includes(filter) || nameText.toLowerCase().includes(filter)) ? '' : 'none';
+            }
+        }
+    });
+</script>
 
 {% endblock %}
