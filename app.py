@@ -41,8 +41,8 @@ def landing():
     return render_template("landing.html")
 
 @app.route("/dashboard")
+@login_required
 def dashboard():
-    # later you'll check if user is logged in
     return render_template("dashboard.html")
 
 @app.route("/login", methods=["GET", "POST"])
@@ -411,6 +411,92 @@ def delete_adoption(adoption_id):
     conn.close()
     return render_template("adoptions_delete.html", adoption=adoption)
 
+@app.route("/healthrecords", endpoint="healthrecords")
+@login_required
+def healthrecords():
+    conn = get_db_connection()
+    healthrecords = conn.execute("SELECT * FROM HealthRecords").fetchall()
+    conn.close()
+    return render_template("healthrecords.html", healthrecords=healthrecords)
+
+@app.route("/healthrecords/new", methods=["GET", "POST"])
+@login_required
+def new_healthrecord():
+    if request.method == "POST":
+        animal_id = request.form["animal_id"]
+        employee_id = request.form["employee_id"]
+        record_type = request.form["record_type"]
+        diagnosis = request.form["diagnosis"]
+        treatment = request.form["treatment"]
+        date = request.form["date"]
+    
+        conn = get_db_connection()
+        conn.execute(
+            "INSERT INTO HealthRecords (animal_id, employee_id, record_type, diagnosis, treatment, date) VALUES (?, ?, ?, ?, ?, ?)",
+            (animal_id, employee_id, record_type, diagnosis, treatment, date)
+        )
+        conn.commit()
+        conn.close()
+
+        flash("New health record added!", "success")
+        return redirect(url_for("healthrecords"))
+
+    return render_template("healthrecords_form.html", healthrecord=None)
+
+@app.route("/healthrecords/<record_id>/edit", methods=["GET", "POST"])
+@login_required
+def edit_healthrecord(record_id):
+    conn = get_db_connection()
+    healthrecord = conn.execute("SELECT * FROM HealthRecords WHERE record_id = ?", (record_id,)).fetchone()
+
+    if not healthrecord:
+        return "health record not found", 404
+
+    if request.method == "POST":
+        animal_id = request.form["animal_id"]
+        employee_id = request.form["employee_id"]
+        record_type = request.form["record_type"]
+        diagnosis = request.form["diagnosis"]
+        treatment = request.form["treatment"]
+        date = request.form["date"]
+    
+        conn.execute("""
+            UPDATE HealthRecords
+            SET animal_id=?, employee_id=?, record_type=?, diagnosis=?, treatment=?, date=?
+            WHERE record_id=?
+        """, (animal_id, employee_id, record_type, diagnosis, treatment, date, record_id))
+
+        conn.commit()
+        conn.close()
+        return redirect(url_for("healthrecords"))
+
+    # GET → show form pre-filled
+    conn.close()
+    return render_template("healthrecords_form.html", healthrecord=healthrecord)
+
+@app.route("/healthrecords/<record_id>/delete", methods=["GET", "POST"])
+@login_required
+def delete_healthrecord(record_id):
+    conn = get_db_connection()
+    healthrecord = conn.execute("SELECT * FROM HealthRecords WHERE record_id = ?", (record_id,)).fetchone()
+
+    if healthrecord is None:
+        conn.close()
+        flash("Health record not found.", "danger")
+        return redirect(url_for("healthrecords"))
+
+    # If POST, confirm delete
+    if request.method == "POST":
+        conn.execute("DELETE FROM HealthRecords WHERE record_id = ?", (record_id,))
+        conn.commit()
+        conn.close()
+        flash("Health record deleted!", "success")
+        return redirect(url_for("healthrecords"))
+    
+    # If GET, show confirmation page
+    conn.close()
+    return render_template("healthrecords_delete.html", healthrecord=healthrecord)
+
 @app.route("/logout")
 @login_required
 def logout():
@@ -448,6 +534,7 @@ def register():
     return render_template("register.html", form=form)
 
 @app.route("/analytics", methods=["GET", "POST"])
+@login_required
 def analytics():
     # For now, a simple placeholder
     return "Analytics page works!"

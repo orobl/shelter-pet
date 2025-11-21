@@ -5,43 +5,57 @@
 {% block content %}
 <h1 class="mb-4">Dashboard</h1>
 
-<div class="row">
+<div class="container">
+    <div class="row g-4"> <!-- g-4 adds consistent spacing between cards -->
 
-    <div class="col-md-4 mb-3">
-        <a href="{{ url_for('animals') }}" class="text-decoration-none">
-            <div class="card shadow-sm p-4 text-center">
-                <h3>Animals</h3>
-                <p>View, add, edit, and manage animals.</p>
-            </div>
-        </a>
-    </div>
+        <div class="col-md-4">
+            <a href="{{ url_for('animals') }}" class="text-decoration-none">
+                <div class="card shadow-sm p-4 text-center h-100">
+                    <h3>Animals</h3>
+                    <p>View, add, edit, and manage animals.</p>
+                </div>
+            </a>
+        </div>
 
-    <div class="col-md-4 mb-3">
-        <a href="{{ url_for('employees') }}" class="text-decoration-none">
-            <div class="card shadow-sm p-4 text-center">
-                <h3>Employees</h3>
-                <p>Manage shelter employees.</p>
-            </div>
-        </a>
-    </div>
+        <div class="col-md-4">
+            <a href="{{ url_for('employees') }}" class="text-decoration-none">
+                <div class="card shadow-sm p-4 text-center h-100">
+                    <h3>Employees</h3>
+                    <p>Manage shelter employees.</p>
+                </div>
+            </a>
+        </div>
 
-    <div class="col-md-4 mb-3">
-        <a href="{{ url_for('adopters') }}" class="text-decoration-none">
-            <div class="card shadow-sm p-4 text-center">
-                <h3>Adopters</h3>
-                <p>Record those who adopted.</p>
-            </div>
-        </a>
-    </div>
+        <div class="col-md-4">
+            <a href="{{ url_for('adopters') }}" class="text-decoration-none">
+                <div class="card shadow-sm p-4 text-center h-100">
+                    <h3>Adopters</h3>
+                    <p>Record those who adopted.</p>
+                </div>
+            </a>
+        </div>
 
-    <div class="col-md-4 mb-3">
-        <a href="{{ url_for('adoptions') }}" class="text-decoration-none">
-            <div class="card shadow-sm p-4 text-center">
-                <h3>Adoptions</h3>
-                <p>Track adoption records.</p>
-            </div>
-        </a>
+        <div class="col-md-4">
+            <a href="{{ url_for('adoptions') }}" class="text-decoration-none">
+                <div class="card shadow-sm p-4 text-center h-100">
+                    <h3>Adoptions</h3>
+                    <p>Track adoption records.</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="{{ url_for('healthrecords') }}" class="text-decoration-none">
+                <div class="card shadow-sm p-4 text-center h-100">
+                    <h3>Health Records</h3>
+                    <p>Track clinic visits, diagnoses, and treatments.</p>
+                </div>
+            </a>
+        </div>
+
     </div>
+</div>
+
 
 </div>
 {% endblock %}
