@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Dashboard</h1>
+
+<div class="row">
+
+    <div class="col-md-4 mb-3">
+        <a href="{{ url_for('animals') }}" class="text-decoration-none">
+            <div class="card shadow-sm p-4 text-center">
+                <h3>Animals</h3>
+                <p>View, add, edit, and manage animals.</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <a href="#" class="text-decoration-none">
+            <div class="card shadow-sm p-4 text-center">
+                <h3>Employees</h3>
+                <p>Manage shelter employees.</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <a href="#" class="text-decoration-none">
+            <div class="card shadow-sm p-4 text-center">
+                <h3>Adoptions</h3>
+                <p>Track adoption records.</p>
+            </div>
+        </a>
+    </div>
+
+</div>
+{% endblock %}

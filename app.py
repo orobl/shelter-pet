@@ -33,16 +33,14 @@ class User(UserMixin):
         self.email = email
         self.password = password
 
-# fetch all of the animal name and species records from the Animals table
-@app.route("/animals")
-def animals():
-    conn = get_db_connection()
-    animals = conn.execute("SELECT * FROM Animals").fetchall()
-    conn.close()
-    return render_template("animals.html", animals=animals)
 @app.route("/")
-def home():
-    return render_template("animals.html", animals=get_db_connection().execute("SELECT * FROM Animals").fetchall())
+def landing():
+    return render_template("landing.html")
+
+@app.route("/dashboard")
+def dashboard():
+    # later you'll check if user is logged in
+    return render_template("dashboard.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -58,12 +56,20 @@ def login():
             user = User(user_row["user_id"], user_row["username"], user_row["email"], user_row["password"])
             login_user(user)
             flash("Logged in successfully!", "success")
-            return redirect(url_for("animals"))
+            return redirect(url_for("dashboard"))
         else:
             flash("Invalid email or password.", "danger")
             return redirect(url_for("login"))
 
     return render_template("login.html")
+
+
+@app.route("/animals")
+def animals():
+    conn = get_db_connection()
+    animals = conn.execute("SELECT * FROM Animals").fetchall()
+    conn.close()
+    return render_template("animals.html", animals=animals)
 
 @app.route("/animals/new", methods=["GET", "POST"])
 def new_animal():
@@ -119,7 +125,6 @@ def edit_animal(animal_id):
     # GET → show form pre-filled
     conn.close()
     return render_template("animals_form.html", animal=animal)
-
 
 @app.route("/animals/<int:animal_id>/delete", methods=["GET", "POST"])
 @login_required
