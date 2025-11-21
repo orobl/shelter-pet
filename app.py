@@ -148,11 +148,100 @@ def delete_animal(animal_id):
         conn.execute("DELETE FROM Animals WHERE animal_id = ?", (animal_id,))
         conn.commit()
         conn.close()
-        flash("Animal deleted successfully.", "success")
+        flash("Animal deleted!", "success")
         return redirect(url_for("animals"))
-
-    conn.close()
+    # If GET, show confirmation page
+    conn.close
     return render_template("animals_delete.html", animal=animal)
+
+@app.route("/employees", endpoint="employees")
+@login_required
+def employees():
+    conn = get_db_connection()
+    employees = conn.execute("SELECT * FROM Employees").fetchall()
+    conn.close()
+    return render_template("employees.html", employees=employees)
+
+@app.route("/employees/new", methods=["GET", "POST"])
+@login_required
+def new_employee():
+    if request.method == "POST":
+        first_name = request.form["first_name"]
+        last_name = request.form["last_name"]
+        supervisor_id = request.form["supervisor_id"]
+        job_title = request.form["job_title"]
+        phone = request.form["phone"]
+        email = request.form["email"]
+    
+        conn = get_db_connection()
+        conn.execute(
+            "INSERT INTO Employees (first_name, last_name, supervisor_id, job_title, phone, email) VALUES (?, ?, ?, ?, ?, ?)",
+            (first_name, last_name, supervisor_id, job_title, phone, email)
+        )
+        conn.commit()
+        conn.close()
+
+        flash("New employee added!", "success")
+        return redirect(url_for("employees"))
+
+    return render_template("employees_form.html", employee=None)
+
+@app.route("/employees/<employee_id>/edit", methods=["GET", "POST"])
+@login_required
+def edit_employee(employee_id):
+    conn = get_db_connection()
+    employee = conn.execute("SELECT * FROM Employees WHERE employee_id = ?", (employee_id,)).fetchone()
+
+    if not employee:
+        return "Employee not found", 404
+
+    if request.method == "POST":
+        first_name = request.form["first_name"]
+        last_name = request.form["last_name"]
+        supervisor_id = request.form["supervisor_id"]
+        job_title = request.form["job_title"]
+        phone = request.form["phone"]
+        email = request.form["email"]
+    
+        conn.execute("""
+            UPDATE Employees
+            SET first_name=?, last_name=?, supervisor_id=?, job_title=?, phone=?, email=?
+            WHERE employee_id=?
+        """, (first_name, last_name, supervisor_id, job_title, phone, email, employee_id))
+
+        conn.commit()
+        conn.close()
+        return redirect(url_for("employees"))
+
+    # GET → show form pre-filled
+    conn.close()
+    return render_template("employees_form.html", employee=employee)
+
+@app.route("/employees/<employee_id>/delete", methods=["GET", "POST"])
+@login_required
+def delete_employee(employee_id):
+    conn = get_db_connection()
+    employee = conn.execute("SELECT * FROM Employees WHERE employee_id = ?", (employee_id,)).fetchone()
+
+    if employee is None:
+        conn.close()
+        flash("Employee not found.", "danger")
+        return redirect(url_for("employees"))
+
+    # If POST, confirm delete
+    if request.method == "POST":
+        conn.execute("DELETE FROM Employees WHERE employee_id = ?", (employee_id,))
+        conn.commit()
+        conn.close()
+        flash("Employee deleted!", "success")
+        return redirect(url_for("employees"))
+    
+    # If GET, show confirmation page
+    conn.close
+    return render_template("employees_delete.html", employee=employee)
+
+
+        
 
 @app.route("/logout")
 @login_required
@@ -189,7 +278,6 @@ def register():
             conn.close()
 
     return render_template("register.html", form=form)
-
 
 @app.route("/analytics", methods=["GET", "POST"])
 def analytics():
